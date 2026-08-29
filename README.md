@@ -1,1 +1,1 @@
-Creating a chess engine using c#
+Building a chess engine using c#
