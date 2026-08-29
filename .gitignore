@@ -1,0 +1,29 @@
+# .NET build output
+**/bin/
+**/obj/
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# User-specific IDE files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Test and coverage output
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+appsettings.Local.json
