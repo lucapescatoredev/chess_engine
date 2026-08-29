@@ -1,7 +1,8 @@
 namespace Chess.Engine;
 public class ChessEngine
 {
-    const int BOARD_SQUARE_NUM = 120; 
+    private const int BOARD_SQUARE_NUM = 120; 
+    private const int MAX_GAME_MOVES = 2048;
     enum PiecesType
     {
         EMPTY, 
@@ -24,10 +25,18 @@ public class ChessEngine
         A, B, C, D, E, F, G, H, NONE
     }
 
-    enum Rows
-    {
-        FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8, NONE 
-    }
+enum Rows
+{
+    _1,
+    _2,
+    _3,
+    _4,
+    _5,
+    _6,
+    _7,
+    _8,
+    NONE
+}
 
     enum Colors
     {
@@ -50,7 +59,13 @@ public class ChessEngine
     {
         TRUE, FALSE
     }
-
+    // 1 0 0 1
+    enum CastlingRights  {
+        WHITE_KING_CASTLE = 1, 
+        WHITE_QUEEN_CASTLE = 2,
+        BLACK_KING_CASTLE = 4, 
+        BLACK_QUEEN_CASTLE = 8 
+    }
     public class Board
     {
         public int[] pieces = new int[BOARD_SQUARE_NUM];
@@ -72,11 +87,77 @@ public class ChessEngine
         public int[] majorPieces = new int[3]; 
         //minor pieces: bishop and knight
         public int[] minorPieces = new int[3]; 
+        public int castlingRights; 
+        public UndoMove[] history = new UndoMove[MAX_GAME_MOVES];
     }
+    public class UndoMove
+    {
+        int move; 
+        int castlingRights;
+        int enPassant;
+        int fiftyMoves; 
+        ulong positionKey;
+    }
+    
+    int[] Square120ToSquare64 = new int[BOARD_SQUARE_NUM];
+    int[] Square64ToSquare120 = new int[64];
+    private int GetSquareCoords(int row, int column) 
+    {
+        return 21 + column + (row * 10);
+    }
+    private void InitSquare120To64()
+    {
+        int column_A = (int)Columns.A;
+        int column_H = (int)Columns.H;
+        int row_1 = (int)Rows._1;
+        int row_8 = (int)Rows._8;
+        int square64 = 0;
 
+        for (int index = 0; index < BOARD_SQUARE_NUM; index++)
+            Square120ToSquare64[index] = 65;
+
+        for (int index = 0; index < 64; index++)
+            Square64ToSquare120[index] = 120;
+
+        for(int i = row_1; i <= row_8; i++)
+        {
+            for(int j = column_A; j <= column_H; j++)
+            {
+                int square = GetSquareCoords(i,j);
+                Square64ToSquare120[square64] = square;
+                Square120ToSquare64[square] = square64;
+                square64++;
+            }
+        }
+    }
     public string HelloWorld()
     {
         
         return "Hello from the engine";
     }
+
+    public void CreateBoard()
+    {
+        InitSquare120To64();
+    }
+    public void PrintBoard()
+    {
+        for(int i = 0; i < BOARD_SQUARE_NUM; i++)
+        {
+            if(i % 10 == 0) Console.WriteLine("\n");
+            Console.Write($"{Square120ToSquare64[i]}".PadLeft(2,' '));
+            Console.Write(" ");
+        }
+        Console.Write("\n");
+        Console.Write("\n");
+
+        for(int i = 0; i < 64; i++)
+        {
+            if(i % 8 == 0) Console.WriteLine("\n");
+            Console.Write(Square64ToSquare120[i]);
+            Console.Write(" ");
+
+        }
+    }
+
 }

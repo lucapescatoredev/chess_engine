@@ -7,6 +7,7 @@ var app = builder.Build();
 app.MapGet("/", () => "Hello World!");
 app.Map("/engine", (ChessEngine engine) =>
 {
-    return engine.HelloWorld();
+    engine.CreateBoard();
+    engine.PrintBoard();
 });
 app.Run();
