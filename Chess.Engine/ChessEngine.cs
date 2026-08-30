@@ -1,7 +1,33 @@
-
-using System.Diagnostics;
-
 namespace Chess.Engine;
+    public enum Columns
+    {
+        A, B, C, D, E, F, G, H, NONE
+    }
+
+    public enum Rows
+    {
+        _1,
+        _2,
+        _3,
+        _4,
+        _5,
+        _6,
+        _7,
+        _8,
+        NONE
+    }
+    public enum Squares
+    {
+        A1 = 21, B1, C1, D1, E1, F1, G1, H1,
+        A2 = 31, B2, C2, D2, E2, F2, G2, H2,
+        A3 = 41, B3, C3, D3, E3, F3, G3, H3,
+        A4 = 51, B4, C4, D4, E4, F4, G4, H4,
+        A5 = 61, B5, C5, D5, E5, F5, G5, H5,
+        A6 = 71, B6, C6, D6, E6, F6, G6, H6,
+        A7 = 81, B7, C7, D7, E7, F7, G7, H7,
+        A8 = 91, B8, C8, D8, E8, F8, G8, H8, EMPTY_SQUARE
+    }
+
 public class ChessEngine
 {
     private const int BOARD_SQUARE_NUM = 120; 
@@ -23,41 +49,10 @@ public class ChessEngine
         bK, 
     }
 
-    enum Columns
-    {
-        A, B, C, D, E, F, G, H, NONE
-    }
-
-    enum Rows
-{
-    _1,
-    _2,
-    _3,
-    _4,
-    _5,
-    _6,
-    _7,
-    _8,
-    NONE
-}
-
     enum Colors
     {
         WHITE, BLACK, BOTH
     }
-
-    enum Squares
-    {
-        A1 = 21, B1, C1, D1, E1, F1, G1, H1,
-        A2 = 31, B2, C2, D2, E2, F2, G2, H2,
-        A3 = 41, B3, C3, D3, E3, F3, G3, H3,
-        A4 = 51, B4, C4, D4, E4, F4, G4, H4,
-        A5 = 61, B5, C5, D5, E5, F5, G5, H5,
-        A6 = 71, B6, C6, D6, E6, F6, G6, H6,
-        A7 = 81, B7, C7, D7, E7, F7, G7, H7,
-        A8 = 91, B8, C8, D8, E8, F8, G8, H8, EMPTY_SQUARE
-    }
-
     enum Booleans
     {
         TRUE, FALSE
@@ -69,6 +64,7 @@ public class ChessEngine
         BLACK_KING_CASTLE = 4, 
         BLACK_QUEEN_CASTLE = 8 
     }
+    
     public class Board
     {
         public int[] pieces = new int[BOARD_SQUARE_NUM];
@@ -109,10 +105,7 @@ public class ChessEngine
     
     int[] Square120ToSquare64 = new int[BOARD_SQUARE_NUM];
     int[] Square64ToSquare120 = new int[64];
-    private int GetSquareCoords(int row, int column) 
-    {
-        return 21 + column + (row * 10);
-    }
+
     private void InitSquare120To64()
     {
         int column_A = (int)Columns.A;
@@ -165,4 +158,38 @@ public class ChessEngine
         }
     }
 
+    public int GetSquareCoords(int row, int column) 
+    {
+        return 21 + column + (row * 10);
+    }
+    public int Square64(int square120)
+    {
+        return Square120ToSquare64[square120];
+    }
+    public void PrintBitboard(ulong bitboard)
+    {
+        ulong shiftMe = 1UL; 
+        int row_1 = (int)Rows._1; 
+        int row_8 = (int)Rows._8; 
+        int column_A = (int)Columns.A; 
+        int column_H = (int)Columns.H; 
+        for(int row = row_8; row >= row_1; row--)
+        {
+            for(int column = column_A; column <= column_H; column++)
+            {
+                int square = GetSquareCoords(row, column); //120 base index
+                int square64 = Square64(square); //64 base index
+                
+                if((bitboard & (shiftMe << square64)) != 0)
+                {
+                    Console.Write("X ");
+                } else
+                {
+                    Console.Write("- ");
+                }
+            }
+            Console.Write("\n");
+        }
+        Console.Write("\n\n");
+    }
 }
