@@ -5,24 +5,23 @@ builder.Services.AddSingleton<ChessEngine>();
 
 var app = builder.Build();
 app.MapGet("/", () => "Hello World!");
-app.Map("/engine", (ChessEngine engine) =>
+app.Map("/engine", () =>
 {
-    engine.CreateBoard();
-    engine.PrintBoard();
-    Console.Write("\n");
-    Console.WriteLine("----------------------------------------------------------");
-    ulong bitboard = 0UL;
-    int D2 = engine.Square64((int)Squares.D2);
-    bitboard |= 1UL << D2; //placing a pawn on D2
-    
-    Console.WriteLine("D2 ADDED");
-    engine.PrintBitboard(bitboard);
+      int d2 = SquareMapping.To64((int)Squares.D2);
+      int d3 = SquareMapping.To64((int)Squares.D3);
+      int d4 = SquareMapping.To64((int)Squares.D4);
 
-    int G2 = engine.Square64((int)Squares.G2);
-    bitboard |= 1UL << G2;
+      ulong bitboard = 0UL;
+      bitboard |= 1UL << d2;
+      bitboard |= 1UL << d3;
+      bitboard |= 1UL << d4;
 
-    Console.WriteLine("G2 ADDED");
-    engine.PrintBitboard(bitboard);
+      BoardPrinter.PrintBoard();
+      Console.Write("\n");
+      Console.Write("\n");
+      Console.Write("\n");
+      BoardPrinter.PrintBitboard(bitboard);
+      Bitboard.PopBit(ref bitboard);
     
 });
 app.Run();

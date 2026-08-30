@@ -1,9 +1,10 @@
+using System.ComponentModel;
+
 namespace Chess.Engine;
     public enum Columns
     {
         A, B, C, D, E, F, G, H, NONE
     }
-
     public enum Rows
     {
         _1,
@@ -27,11 +28,6 @@ namespace Chess.Engine;
         A7 = 81, B7, C7, D7, E7, F7, G7, H7,
         A8 = 91, B8, C8, D8, E8, F8, G8, H8, EMPTY_SQUARE
     }
-
-public class ChessEngine
-{
-    private const int BOARD_SQUARE_NUM = 120; 
-    private const int MAX_GAME_MOVES = 2048;
     enum PiecesType
     {
         EMPTY, 
@@ -48,7 +44,6 @@ public class ChessEngine
         bQ, 
         bK, 
     }
-
     enum Colors
     {
         WHITE, BLACK, BOTH
@@ -64,132 +59,6 @@ public class ChessEngine
         BLACK_KING_CASTLE = 4, 
         BLACK_QUEEN_CASTLE = 8 
     }
-    
-    public class Board
+    public class ChessEngine
     {
-        public int[] pieces = new int[BOARD_SQUARE_NUM];
-        public ulong[] pawns {get;} = new ulong[3];
-        public int[] kingSquare = new int[2];
-        public int side;
-        public int[]? enPassant;
-        public int fiftyMoves; 
-        //In two-or-more-player sequential games, a ply is one turn taken by one of the players. 
-        public int ply; 
-        public int historyPlay; 
-        //unique key generated for each position
-        public ulong positionKey; 
-
-        public int[] piecesNumber = new int[13];
-        //every piece which is not a pawn
-        public int[] bigPieces = new int[3]; 
-        //major pieces: rooks and queen
-        public int[] majorPieces = new int[3]; 
-        //minor pieces: bishop and knight
-        public int[] minorPieces = new int[3]; 
-        public int castlingRights; 
-        public UndoMove[] history = new UndoMove[MAX_GAME_MOVES];
-        //piece list:  
-        // 13: every piece type (from wP to bK),
-        // 10: we can have at most 10 pieces for each type 
-        // (example: if I promote every single pawns to a knight, there will be at most 10 (2 + 8) knights on the board) 
-        public int[,] pieceList = new int[13, 10];
     }
-    public class UndoMove
-    {
-        int move; 
-        int castlingRights;
-        int enPassant;
-        int fiftyMoves; 
-        ulong positionKey;
-    }
-    
-    int[] Square120ToSquare64 = new int[BOARD_SQUARE_NUM];
-    int[] Square64ToSquare120 = new int[64];
-
-    private void InitSquare120To64()
-    {
-        int column_A = (int)Columns.A;
-        int column_H = (int)Columns.H;
-        int row_1 = (int)Rows._1;
-        int row_8 = (int)Rows._8;
-        int square64 = 0;
-
-        for (int index = 0; index < BOARD_SQUARE_NUM; index++)
-            Square120ToSquare64[index] = 65;
-
-        for (int index = 0; index < 64; index++)
-            Square64ToSquare120[index] = 120;
-
-        for(int i = row_1; i <= row_8; i++)
-        {
-            for(int j = column_A; j <= column_H; j++)
-            {
-                int square = GetSquareCoords(i,j);
-                Square64ToSquare120[square64] = square;
-                Square120ToSquare64[square] = square64;
-                square64++;
-            }
-        }
-    }
-    public void CreateBoard()
-    {
-        // int x = 10;
-        // int y = 20;
-        // Assert.That(x == y, "x and y should be equal");
-        InitSquare120To64();
-    }
-    public void PrintBoard()
-    {
-        for(int i = 0; i < BOARD_SQUARE_NUM; i++)
-        {
-            if(i % 10 == 0) Console.WriteLine("\n");
-            Console.Write($"{Square120ToSquare64[i]}".PadLeft(2,' '));
-            Console.Write(" ");
-        }
-        Console.Write("\n");
-        Console.Write("\n");
-
-        for(int i = 0; i < 64; i++)
-        {
-            if(i % 8 == 0) Console.WriteLine("\n");
-            Console.Write(Square64ToSquare120[i]);
-            Console.Write(" ");
-
-        }
-    }
-
-    public int GetSquareCoords(int row, int column) 
-    {
-        return 21 + column + (row * 10);
-    }
-    public int Square64(int square120)
-    {
-        return Square120ToSquare64[square120];
-    }
-    public void PrintBitboard(ulong bitboard)
-    {
-        ulong shiftMe = 1UL; 
-        int row_1 = (int)Rows._1; 
-        int row_8 = (int)Rows._8; 
-        int column_A = (int)Columns.A; 
-        int column_H = (int)Columns.H; 
-        for(int row = row_8; row >= row_1; row--)
-        {
-            for(int column = column_A; column <= column_H; column++)
-            {
-                int square = GetSquareCoords(row, column); //120 base index
-                int square64 = Square64(square); //64 base index
-                
-                if((bitboard & (shiftMe << square64)) != 0)
-                {
-                    Console.Write("X ");
-                } else
-                {
-                    Console.Write("- ");
-                }
-            }
-            Console.Write("\n");
-        }
-        Console.Write("\n\n");
-    }
-}
