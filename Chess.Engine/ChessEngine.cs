@@ -1,3 +1,6 @@
+
+using System.Diagnostics;
+
 namespace Chess.Engine;
 public class ChessEngine
 {
@@ -25,7 +28,7 @@ public class ChessEngine
         A, B, C, D, E, F, G, H, NONE
     }
 
-enum Rows
+    enum Rows
 {
     _1,
     _2,
@@ -89,6 +92,11 @@ enum Rows
         public int[] minorPieces = new int[3]; 
         public int castlingRights; 
         public UndoMove[] history = new UndoMove[MAX_GAME_MOVES];
+        //piece list:  
+        // 13: every piece type (from wP to bK),
+        // 10: we can have at most 10 pieces for each type 
+        // (example: if I promote every single pawns to a knight, there will be at most 10 (2 + 8) knights on the board) 
+        public int[,] pieceList = new int[13, 10];
     }
     public class UndoMove
     {
@@ -130,14 +138,11 @@ enum Rows
             }
         }
     }
-    public string HelloWorld()
-    {
-        
-        return "Hello from the engine";
-    }
-
     public void CreateBoard()
     {
+        // int x = 10;
+        // int y = 20;
+        // Assert.That(x == y, "x and y should be equal");
         InitSquare120To64();
     }
     public void PrintBoard()
