@@ -47,4 +47,6 @@ public static class Bitboard
         return count;
     }
 
+    public static ulong SetBit(ref ulong bitboard, int square) =>  bitboard |= 1UL << square;
+    public static ulong RemoveBit(ref ulong bitboard, int square) => bitboard &= ~(1UL << square);
 }

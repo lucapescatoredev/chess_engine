@@ -1,16 +1,15 @@
 namespace Chess.Engine;
-public static class SquareMapping
+public static class BoardMapping
 {   
     private static readonly int[] From120To64;
     private static readonly int[] From64To120;
-    static SquareMapping()
+    static BoardMapping()
     {
         From120To64 = Create120To64();
         From64To120 = Create64To120();
     }
-    public const int OFFBOARD_64 = 65; 
-    public const int OFFBOARD_120 = 120;
-
+    private const int OFFBOARD_64 = 65; 
+    private const int OFFBOARD_120 = 120;
 
     private static int[] Create120To64()
     {
@@ -39,5 +38,7 @@ public static class SquareMapping
 
     public static int To64(int square120) => From120To64[square120];
     public static int To120(int square64) => From64To120[square64];
+    public static ulong SetBit(ref ulong bitboard, int square) =>  bitboard |= 1UL << square;
+    public static ulong RemoveBit(ref ulong bitboard, int square) => bitboard &= ~(1UL << square);
 
 }
