@@ -12,12 +12,13 @@ app.Map("/engine", () =>
 
       ulong bitboard = 0UL;
 
-      // bitboard |= 1UL << d2;
-      // bitboard |= 1UL << d3;
-      // bitboard |= 1UL << d4;
+      // Bitboard.SetBit(ref bitboard,d2);
+      // Bitboard.RemoveBit(ref bitboard,d2);
 
-      Bitboard.SetBit(ref bitboard,d2);
-      Bitboard.RemoveBit(ref bitboard,d2);
+      //setting the 12th bit
+      bitboard |= Bitboard.SetMask[12];
+      
+
       BoardPrinter.PrintBoard();
       Console.Write("\n");
       Console.Write("\n");

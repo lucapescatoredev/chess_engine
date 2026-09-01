@@ -2,6 +2,17 @@ namespace Chess.Engine;
 
 public static class Bitboard
 {
+    public readonly static ulong[] SetMask;
+    public readonly static ulong[] ClearMask; 
+    static Bitboard() {
+        SetMask = new ulong[64];
+        ClearMask = new ulong[64];
+        for(int i = 0; i < 64; i++)
+        {
+            SetMask[i] = 1UL << i; 
+            ClearMask[i] = ~SetMask[i];
+        }
+    }
     private static readonly int[] BitTable =
     [
         63, 30, 3, 32, 25, 41, 22, 33,
